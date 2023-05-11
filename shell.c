@@ -8,30 +8,32 @@
  */
 int main (int ac, char *av[])
 {
-	size_t *len = 0;
+	size_t len = 0;
 	ssize_t line;
+	int status;
 
-	if (ac >= 3)
+	if (ac >= 3 || av == NULL)
 		return (-1);
 	while (1)
 	{
 		write(out,"($) ", 4);
-		line = getline(lptr, len, stdin);
+		line = getline(&lptr, &len, stdin);
 		while (line != -1)
 		{
 			child_pid = fork();
 			if (child_pid == 0)
 			{
 
-				execve(lptr, av, NULL);
+				execve(lptr, &lptr, NULL);
 			}
 			else
 			{
-				wait(0);
+				wait(&status);
 				free(lptr);
 			}
-			line = getline(lptr, len, stdin);
+			line = getline(&lptr, &len, stdin);
 		}
+		free(lptr);
 	}
 	return (0);
 }
