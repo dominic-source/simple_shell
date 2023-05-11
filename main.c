@@ -8,11 +8,28 @@
  */
 int main (int ac, char *av[])
 {
-
 	size_t len = 0;
 	ssize_t line;
 
-	getline(lptr, len, stdin);
+	while (1)
+	{
+		write(out,"($) ", 4);
+		line = getline(lptr, len, stdin);
+		while (line != -1)
+		{
+			child_pid = fork();
+			if (child_pid == 0)
+			{
 
+				execve(lptr, av, NULL);
+			}
+			else
+			{
+				wait(0);
+				free(lptr);
+			}
+			line = getline(lptr, len, stdin);
+		}
+	}
 	return (0);
 }
