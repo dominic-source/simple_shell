@@ -18,5 +18,6 @@ int in = STDIN_FILENO;
 int out = STDOUT_FILENO;
 int er = STDERR_FILENO;
 pid_t child_pid;
+char *rm_nwl(char *str);
 
 #endif
