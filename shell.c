@@ -9,6 +9,7 @@
 int main (int ac, char *av[])
 {
 	char *token;
+	char *arc[2] = [token, ""];
 	size_t len = 0;
 	ssize_t line;
 	int status;
@@ -24,8 +25,8 @@ int main (int ac, char *av[])
 			child_pid = fork();
 			if (child_pid == 0)
 			{
-				token = strtok(ltpr," ");
-				execve(token, &token, NULL);
+				token = strtok(lptr," ");
+				execve(token, arc, NULL);
 			}
 			else
 			{
@@ -34,7 +35,7 @@ int main (int ac, char *av[])
 			}
 			line = getline(&lptr, &len, stdin);
 		}
-		free(lptr);
+
 	}
 	return (0);
 }
