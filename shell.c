@@ -8,6 +8,7 @@
  */
 int main (int ac, char *av[])
 {
+	char *token;
 	size_t len = 0;
 	ssize_t line;
 	int status;
@@ -23,8 +24,8 @@ int main (int ac, char *av[])
 			child_pid = fork();
 			if (child_pid == 0)
 			{
-
-				execve(lptr, &lptr, NULL);
+				token = strtok(ltpr," ");
+				execve(token, &token, NULL);
 			}
 			else
 			{
