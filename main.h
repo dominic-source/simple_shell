@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 
 char *lptr = NULL;
 int in = STDIN_FILENO;
