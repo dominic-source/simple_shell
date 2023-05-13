@@ -6,7 +6,6 @@
  *
  * Return: string without newline character
  */
-
 char *rm_nwl(char *str)
 {
 	int i;

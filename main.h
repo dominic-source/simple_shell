@@ -12,12 +12,13 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
-
-char *lptr = NULL;
-int in = STDIN_FILENO;
-int out = STDOUT_FILENO;
-int er = STDERR_FILENO;
-pid_t child_pid;
 char *rm_nwl(char *str);
+
+char *lptr;
+int in;
+int out;
+int er;
+pid_t child_pid;
+
 
 #endif

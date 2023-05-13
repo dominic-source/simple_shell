@@ -8,34 +8,68 @@
  */
 int main (int ac, char *av[])
 {
-	char *token;
-	char *arc[2] = [token, ""];
+	char *arc[2];
 	size_t len = 0;
 	ssize_t line;
-	int status;
+	int status, interactive, ex;
 
+	in = STDIN_FILENO;
+	out = STDOUT_FILENO;
+	er = STDERR_FILENO;
+	interactive = isatty(in);
 	if (ac >= 3 || av == NULL)
 		return (-1);
-	while (1)
+	while (interactive)
 	{
 		write(out,"($) ", 4);
 		line = getline(&lptr, &len, stdin);
-		while (line != -1)
+		if (line == -1)
 		{
-			child_pid = fork();
-			if (child_pid == 0)
-			{
-				token = strtok(lptr," ");
-				execve(token, arc, NULL);
-			}
-			else
-			{
-				wait(&status);
-				free(lptr);
-			}
-			line = getline(&lptr, &len, stdin);
+			write(out, "\n", 1);
+			free(lptr);
+			exit(0);
 		}
-
+		child_pid = fork();
+		if (child_pid == 0)
+		{
+			rm_nwl(lptr);
+			arc[0] = lptr;
+			arc[1] = NULL;
+			ex = execve(lptr, arc, NULL);
+			if (ex == -1)
+				perror(av[0]);
+			exit(1);
+		}
+		else
+		{
+			wait(&status);
+		}
 	}
+
+	while(!interactive)
+	{
+		line = getline(&lptr, &len, stdin);
+		if (line == -1)
+		{
+			free(lptr);
+			exit(0);
+		}
+		rm_nwl(lptr);
+		child_pid = fork();
+		if (child_pid == 0)
+		{
+			arc[0] = lptr;
+			arc[1] = NULL;
+			ex = execve(lptr, arc, NULL);
+			if (ex == -1)
+				perror(av[0]);
+			exit(1);
+	      	}
+		else
+		{
+			wait(&status);
+		}
+	}
+	free(lptr);
 	return (0);
 }
