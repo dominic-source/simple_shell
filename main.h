@@ -22,6 +22,7 @@ char **argv;
 pid_t child_pid;
 int _strcmp(const char *s1, const char *s2);
 int _strncmp(const char *s1, const char *s2, size_t n);
+char *_strcat(char *restrict dest, const char *restrict src);
 size_t _strlen(const char *str);
 void noninteract(int interractive);
 char *_strcpy(char *dest, const char *src);
