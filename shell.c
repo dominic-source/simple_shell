@@ -17,6 +17,7 @@ int main (int ac, char *av[])
 	out = STDOUT_FILENO;
 	er = STDERR_FILENO;
 	interactive = isatty(in);
+	argv = &av;
 	if (ac >= 3 || av == NULL)
 		return (-1);
 	while (interactive)
@@ -45,6 +46,22 @@ int main (int ac, char *av[])
 			wait(&status);
 		}
 	}
+	noninteract(interact);
+	free(lptr);
+	return (0);
+}
+
+/**
+ * noninteract - non interactive mode for the shell
+ * @interactive: the mode of the shell
+ *
+ */
+void noninteract(int interactive)
+{
+	char *arc[2];
+	size_t len = 0;
+	ssize_t line;
+	int status, ex;
 
 	while(!interactive)
 	{
@@ -62,7 +79,7 @@ int main (int ac, char *av[])
 			arc[1] = NULL;
 			ex = execve(lptr, arc, NULL);
 			if (ex == -1)
-				perror(av[0]);
+				perror(argv[0]);
 			exit(1);
 	      	}
 		else
@@ -70,6 +87,4 @@ int main (int ac, char *av[])
 			wait(&status);
 		}
 	}
-	free(lptr);
-	return (0);
 }
