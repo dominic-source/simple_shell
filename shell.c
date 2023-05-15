@@ -13,11 +13,13 @@ int main (int ac, char *av[])
 	ssize_t line;
 	int status, interactive, ex;
 
+	/* Global variables */
 	in = STDIN_FILENO;
 	out = STDOUT_FILENO;
 	er = STDERR_FILENO;
 	interactive = isatty(in);
-	argv = &av;
+	argv = av;
+
 	if (ac >= 3 || av == NULL)
 		return (-1);
 	while (interactive)
@@ -38,7 +40,7 @@ int main (int ac, char *av[])
 			arc[1] = NULL;
 			ex = execve(lptr, arc, NULL);
 			if (ex == -1)
-				perror(av[0]);
+				perror(argv[0]);
 			exit(1);
 		}
 		else
@@ -46,7 +48,7 @@ int main (int ac, char *av[])
 			wait(&status);
 		}
 	}
-	noninteract(interact);
+	noninteract(interactive);
 	free(lptr);
 	return (0);
 }
