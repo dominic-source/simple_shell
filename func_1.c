@@ -71,12 +71,12 @@ int _strncmp(const char *s1, const char *s2, size_t n)
  * Return: a pointer to the resulting dest string
  */
 
-char *_strcat(char *dest, const char *restrict src)
+char *_strcat(char *dest, const char *src)
 {
-	if (dest == NULL || src == NULL)
-		return NULL;
 	int i, j, m;
 
+	if (dest == NULL || src == NULL)
+		return (NULL);
 	i = 0;
 	while (dest[i] != '\0')
 	{
@@ -98,3 +98,56 @@ char *_strcat(char *dest, const char *restrict src)
 
 	return (dest);
 }
+
+/**
+ * _strtok - breaks a string into non empty tokens
+ * @str: input string
+ * @delim: the delimiter
+ *
+ * Return: A pointer to the next token or NULL in none
+ */
+
+char *_strtok(char *str, const char *delim)
+{
+	static char *nxtoken;
+	char *crtoken;
+	int i = 0;
+
+	if (delim == NULL)
+		return (NULL);
+	if (str != NULL)
+	{
+		while (str[i] == *delim)
+		{
+			i++;
+		}
+		if (str[i] == '\0')
+			return (NULL);
+		crtoken = &str[i];
+	}
+	else if (str == NULL)
+	{
+		if (nxtoken == NULL || nxtoken[0] == '\0')
+			return (NULL);
+		str = nxtoken;
+		crtoken = str;
+	}
+	while (str[i] != *delim && str[i] != '\0')
+	{
+		i++;
+	}
+	if (str[i] == '\0')
+	{
+		nxtoken = NULL;
+		return (crtoken);
+	}
+	str[i] = '\0';
+	i++;
+	while (str[i] == *delim)
+	{
+		i++;
+	}
+	nxtoken = &str[i];
+	return (crtoken);
+}
+
