@@ -20,6 +20,8 @@ int out;
 int er;
 char **argv;
 pid_t child_pid;
+char **_environ;
+extern char **environ;
 int _strcmp(const char *s1, const char *s2);
 int _strncmp(const char *s1, const char *s2, size_t n);
 char *_strcat(char *dest, const char *src);
@@ -27,6 +29,7 @@ char *_strtok(char *str, const char *delim);
 size_t _strlen(const char *str);
 void noninteract(int interractive);
 char *_strcpy(char *dest, const char *src);
+ssize_t _getline(char **lptr, size_t *n, int fd);
 
 
 #endif
