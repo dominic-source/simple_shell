@@ -1,8 +1,27 @@
 #include "main.h"
+#define BUF_READ 4096
+#define INIT_LPTR\
+	do {\
+		for (i = 0; buf_read[i] != '\n' && buf_read[i] != '\0'; i++)\
+			(*lineptr)[i] = buf_read[i];\
+		if (buf_read[i] == '\n')\
+		{\
+			(*lineptr)[i] = '\n';\
+			(*lineptr)[++i] = '\0';\
+		} \
+		else\
+			(*lineptr)[i] = '\0';\
+		_strcpy(temp, buf_read);\
+		for (i = 0; i < count; i++)\
+			buf_read[i] = 0;\
+		for (i = b_count; temp[i] != '\0'; i++)\
+			buf_read[j++] = temp[i];\
+	} \
+	while (0)
 
 /**
  * _strlen - count the length of string
- * @str - string to count
+ * @str: string to count
  * Return: length of string
  */
 size_t _strlen(const char *str)
@@ -44,15 +63,22 @@ char *_strcpy(char *dest, const char *src)
  */
 ssize_t _getline(char **lineptr, size_t *n, int stream)
 {
-	static char buf_read[128];
-	static ssize_t rc = 128;
-	char temp[128];
-	size_t b_count = 0;
-	int count = 128, i, j = 0;
+	static char buf_read[BUF_READ] = "";
+	static ssize_t rc = BUF_READ;
+	static int nlne = 1;
+	char hld_read[BUF_READ / 2] = "", temp[BUF_READ] = "";
+	size_t b_count = 0, i, count = BUF_READ, j = 0;
 
-	if (rc == count)
-		rc = read(stream, buf_read, count);
-	if (rc == -1 || buf_read[0] == '\0')
+	if (nlne == 0 || buf_read[0] == '\0')
+	{
+		nlne = 0;
+		rc = read(stream, hld_read, sizeof(hld_read));
+		_strcat(buf_read, hld_read);
+		for (i = 0; buf_read[i] != 0; i++)
+			if (buf_read[i] == '\n')
+				nlne++;
+	}
+	if ((rc == -1 && buf_read[0] == '\0') || (rc == 0 && nlne == -1))
 		return (-1);
 	for (i = 0; buf_read[i] != '\n' && buf_read[i] != '\0'; i++)
 		b_count++;
@@ -64,56 +90,17 @@ ssize_t _getline(char **lineptr, size_t *n, int stream)
 	{
 		*lineptr = malloc(sizeof(char) * (b_count + 1));
 		if (*lineptr == NULL)
-		{
-			free(*lineptr);
 			return (-1);
-		}
 	}
-	else if (*n != 0 && *n != b_count)
+	else
 	{
 		free(*lineptr);
 		*lineptr = malloc(sizeof(char) * (b_count + 1));
 		if (*lineptr == NULL)
-		{
-			free(*lineptr);
 			return (-1);
-		}
 	}
 	*n = b_count;
-	for (i = 0; buf_read[i] != '\n'; i++)
-		(*lineptr)[i] = buf_read[i];
-	if (buf_read[i] == '\n')
-	{
-		(*lineptr)[i] = '\n';
-		(*lineptr)[++i] = '\0';
-	}
-	else
-		(*lineptr)[i] = '\0';
-	_strcpy(temp, buf_read);
-	for (i = 0; buf_read[i] != '\0'; i++)
-		buf_read[i] = '\0';
-	for (i = b_count; temp[i] != '\0'; i++)
-		buf_read[j++] = temp[i];
+	INIT_LPTR;
+	nlne--;
 	return (rc);
-}
-
-
-int main(void)
-{
-	int i = 1, fd;
-	size_t n = 0;
-	char *lptr;
-	fd = open("fil", O_RDONLY);
-
-	while (i != -1)
-	{
-
-		i = _getline(&lptr, &n, fd);
-		if (i != -1)
-			printf("!-%s", lptr);
-	}
-	close(fd);
-	if (lptr != NULL)
-		free(lptr);
-	return (0);
 }
