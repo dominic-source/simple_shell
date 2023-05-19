@@ -2,6 +2,7 @@
 #define BUF_READ 4096
 #define INIT_LPTR\
 	do {\
+		*n = b_count;\
 		for (i = 0; buf_read[i] != '\n' && buf_read[i] != '\0'; i++)\
 			(*lineptr)[i] = buf_read[i];\
 		if (buf_read[i] == '\n')\
@@ -16,6 +17,7 @@
 			buf_read[i] = 0;\
 		for (i = b_count; temp[i] != '\0'; i++)\
 			buf_read[j++] = temp[i];\
+		nlne--;\
 	} \
 	while (0)
 
@@ -69,10 +71,12 @@ ssize_t _getline(char **lineptr, size_t *n, int stream)
 	char hld_read[BUF_READ / 2] = "", temp[BUF_READ] = "";
 	size_t b_count = 0, i, count = BUF_READ, j = 0;
 
-	if (nlne == 0 || buf_read[0] == '\0')
+	if (nlne <= 1 && buf_read[0] == '\0')
 	{
 		nlne = 0;
 		rc = read(stream, hld_read, sizeof(hld_read));
+		if (rc == 0)
+			return (-1);
 		_strcat(buf_read, hld_read);
 		for (i = 0; buf_read[i] != 0; i++)
 			if (buf_read[i] == '\n')
@@ -99,8 +103,31 @@ ssize_t _getline(char **lineptr, size_t *n, int stream)
 		if (*lineptr == NULL)
 			return (-1);
 	}
-	*n = b_count;
 	INIT_LPTR;
-	nlne--;
 	return (rc);
+}
+
+/**
+ * free_mem - free memory(ies)
+ * @args: free pointer to pointers
+ * @a: free pointer
+ * @b: free pointer
+ * Description: if any argument won't be used, set it to NULL
+ * Return: Nothing
+ */
+void free_mem(char **args, char *a, char *b)
+{
+	int i;
+
+	if (a != NULL)
+		free(a);
+	if (b != NULL)
+		free(b);
+
+	if (args != NULL)
+	{
+		for (i = 0; args[i] != NULL; i++)
+			free(args[i]);
+		free(args);
+	}
 }
