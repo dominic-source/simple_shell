@@ -1,11 +1,4 @@
 #include "main.h"
-void free_mem(char **args, char *a, char *b);
-char **alloc_mem(void);
-void hndl_sgnl(int sig);
-char *handle_cmd(void);
-void interact(int mode);
-char **arc = NULL;
-void _env(void);
 
 /**
  * main - start a simple shell
@@ -23,6 +16,7 @@ int main(int ac, char *av[])
 	er = STDERR_FILENO;
 	interactive = isatty(in);
 	argv = av;
+	commands_cnt = 0;
 	_env();
 	signal(SIGINT, hndl_sgnl);
 
@@ -57,16 +51,15 @@ void interact(int mode)
 		free_mem(_environ, NULL, NULL);
 		exit(0);
 	}
+	commands_cnt++;
 	rm_nwl(lptr);
+	child_pid = 1;
 	arc = alloc_mem();
 	hdl = handle_cmd();
 	chk = access(arc[0], F_OK | X_OK);
-	if (arc == NULL || hdl == NULL || chk != 0)
-	{
-		child_pid = 1;
-		perror(argv[0]);
-	}
-	else if (chk == 0)
+	if ((arc == NULL || hdl == NULL || chk != 0) && child_pid != -1)
+			perror(argv[0]);
+	else if (chk == 0 && child_pid != -1)
 		child_pid = fork();
 
 	if (child_pid == 0)
@@ -101,7 +94,11 @@ char *handle_cmd(void)
 		free_mem(arc, NULL, NULL);
 		return (NULL);
 	}
-	if (_strncmp(bin, arc[0], 5) != 0)
+	else if (_strcmp(arc[0], "exit") == 0)
+		my_exit();
+	else if (_strcmp(arc[0], "env") == 0)
+		print_env();
+	else if (_strncmp(bin, arc[0], 5) != 0)
 	{
 		_strcpy(temp, arc[0]);
 		length = _strlen(arc[0]) + 6;
