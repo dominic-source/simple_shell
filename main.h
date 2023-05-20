@@ -30,6 +30,17 @@ size_t _strlen(const char *str);
 void noninteract(int interractive);
 char *_strcpy(char *dest, const char *src);
 ssize_t _getline(char **lptr, size_t *n, int fd);
-
+int _setenv(const char *name, const char *value, int overwrite);
+void free_mem(char **args, char *a, char *b);
+char **alloc_mem(void);
+void hndl_sgnl(int sig);
+char *handle_cmd(void);
+void interact(int mode);
+char **arc = NULL;
+int commands_cnt;
+void _env(void);
+int str_num(char *str);
+void print_env(void);
+void my_exit(void);
 
 #endif
