@@ -36,11 +36,11 @@ char **alloc_mem(void);
 void hndl_sgnl(int sig);
 char *handle_cmd(void);
 void interact(int mode);
-char **arc = NULL;
+char **arc;
 int commands_cnt;
 void _env(void);
 int str_num(char *str);
 void print_env(void);
-void my_exit(void);
+void my_exit(void);
 
 #endif
