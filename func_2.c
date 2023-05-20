@@ -96,24 +96,3 @@ ssize_t _getline(char **lineptr, size_t *n, int stream)
 		buf_read[j++] = temp[i];
 	return (rc);
 }
-
-
-int main(void)
-{
-	int i = 1, fd;
-	size_t n = 0;
-	char *lptr;
-	fd = open("fil", O_RDONLY);
-
-	while (i != -1)
-	{
-
-		i = _getline(&lptr, &n, fd);
-		if (i != -1)
-			printf("!-%s", lptr);
-	}
-	close(fd);
-	if (lptr != NULL)
-		free(lptr);
-	return (0);
-}

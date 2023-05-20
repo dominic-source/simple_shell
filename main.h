@@ -30,6 +30,6 @@ size_t _strlen(const char *str);
 void noninteract(int interractive);
 char *_strcpy(char *dest, const char *src);
 ssize_t _getline(char **lptr, size_t *n, int fd);
-
+int _setenv(const char *name, const char *value, int overwrite);
 
 #endif
