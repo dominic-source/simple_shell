@@ -46,17 +46,11 @@ void _env(void)
 int _setenv(const char *name, const char *value, int overwrite)
 {
 	int i, j, index = -1;
-	char *nm, *buffer, *envcpy, **new_environ;
+	char *nm, **new_environ;
 
 	for (i = 0; _environ[i] != NULL; i++)
 	{
-		buffer = (char *)malloc(_strlen(_environ[i]) * sizeof(char));
-		if (buffer == NULL)
-			return (-1);
-		envcpy = _strcpy(buffer, _environ[i]);
-		nm = _strtok(envcpy, "=");
-		j = _strcmp(nm, name);
-		free(buffer);
+		j = _strncmp(name, _environ[i], _strlen(name));
 		if (j == 0 && overwrite == 0)
 			return (0);
 		else if (j == 0 && overwrite != 0)
@@ -78,15 +72,107 @@ int _setenv(const char *name, const char *value, int overwrite)
 	}
 	else
 	{
-		new_environ = (char **)realloc(_environ, (sizeof(char *) * (i + 2)));
+		new_environ = _realloc_env(i + 2);
 		if (new_environ == NULL)
 		{
 			free(nm);
 			return (-1);
 		}
-		_environ = new_environ;
 		_environ[i] = nm;
 		_environ[i + 1] = NULL;
 	}
+	return (0);
+}
+
+/**
+ * _unsetenv - deletes the vairble name from the environment
+ * @name: name of environment to delete
+ *
+ * Return: returns zero on success, or -1 on error
+ */
+
+int _unsetenv(const char *name)
+{
+	int i, j, index = -1;
+
+	for (i = 0; _environ[i] != NULL; i++)
+	{
+		j = _strncmp(name, _environ[i], _strlen(name));
+		if (j != 0 &&( _environ[i + 1] == NULL) && (index == -1))
+			return (0);
+		else if (j == 0)
+		{
+			index = i;
+		}
+	}
+	while (index < (i - 1))
+	{
+		_environ[index] = _environ[index + 1];
+		index++;
+	}
+	_environ[index] = NULL;
+	free(_environ[index + 1]);
+
+	return (0);
+}
+
+
+/**
+ * _realloc_env - reallocates memory to ptr to size n
+ * @i: new memory size
+ *
+ * Return: pointer to the newly allocated memory
+ */
+
+char **_realloc_env(int i)
+{
+	int n;
+	char **new_environ;
+
+	new_environ = (char **)malloc(sizeof(char *) * (i));
+	if (new_environ == NULL)
+		return (NULL);
+	for (n = 0; _environ[n] != NULL; n++)
+	{
+		new_environ[n] = _environ[n];
+	}
+	new_environ[n] = NULL;
+	free(_environ);
+	_environ = new_environ;
+	for (n = 0; new_environ[n] != NULL; n++)
+	{
+		_environ[n] = new_environ[n];
+	}
+
+	return (_environ);
+}
+
+int main()
+{
+	int i = 0;
+	char *str;
+
+	_env();
+	_setenv("PATH", "Lekki_Epe", 1);
+	_setenv("STATE", "Abia", 1);
+	while (_environ[i] != NULL)
+	{
+		str = _environ[i];
+		printf("%s\n", str);
+		i++;
+	}
+	_unsetenv("STATE");
+	_unsetenv("LS_COLORS");
+	_unsetenv("SHLVL");
+	_unsetenv("PATH");
+	_unsetenv("HOSTNAME");
+	i = 0;
+	while (_environ[i] != NULL)
+	{
+		str = _environ[i];
+		printf("%s\n", str);
+		i++;
+	}
+
 	return (0);
 }
