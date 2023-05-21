@@ -42,5 +42,10 @@ void _env(void);
 int str_num(char *str);
 void print_env(void);
 void my_exit(void);
+char **_realloc_env(int i);
+int _unsetenv(const char *name);
+char *num_str(int num, char str[]);
+void print_error(char *message);
+int interactive;
 
 #endif
