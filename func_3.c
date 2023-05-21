@@ -90,22 +90,3 @@ int _setenv(const char *name, const char *value, int overwrite)
 	}
 	return (0);
 }
-
-
-int main ()
-{
-	int i = 0;
-	char *str;
-
-	_env();	
-	_setenv("PATH1", "Abia", 0);
-	while (_environ[i] != NULL)
-	{
-		str = _environ[i];
-		printf("%s\n", str);
-		i++;
-	}
-	return (0);
-}
-
-
