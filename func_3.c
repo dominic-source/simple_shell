@@ -156,6 +156,7 @@ int main()
 
 	_env();	
 	_setenv("PATH", "Lekki_Epe", 1);
+	_setenv("LS_COLORS", "Blue", 0);
 	_setenv("STATE", "Abia", 1);
 	while (_environ[i] != NULL)
 	{
