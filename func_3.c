@@ -93,7 +93,7 @@ int _setenv(const char *name, const char *value, int overwrite)
 
 int _unsetenv(const char *name)
 {
-	int i, j, index = -1; 
+	int i, j, index = -1;
 
 	for (i = 0; _environ[i] != NULL; i++)
 	{
@@ -146,15 +146,13 @@ char **_realloc_env(int i)
 
 	return (_environ);
 }
-			
-	
-int main()
-{	
 
+int main()
+{
 	int i = 0;
 	char *str;
 
-	_env();	
+	_env();
 	_setenv("PATH", "Lekki_Epe", 1);
 	_setenv("LS_COLORS", "Blue", 0);
 	_setenv("STATE", "Abia", 1);
@@ -179,5 +177,3 @@ int main()
 
 	return (0);
 }
-
-
