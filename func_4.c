@@ -26,6 +26,39 @@ int str_num(char *str)
 }
 
 /**
+ * num_str - convert numbers to string
+ * @num: number
+ * @str: an pre allocated memory for str
+ * Return: pointer to stringed number
+ */
+char *num_str(int num, char *str)
+{
+	int i, count = -1, start = 0, m, rem;
+
+	m = num;
+	if (num < 0)
+	{
+		str[0] = '-';
+		start = 1;
+		count++;
+	}
+	while (m != 0)
+	{
+		count++;
+		m /= 10;
+	}
+	str[count + 1] = '\0';
+	for (i = count; i >= start; i--)
+	{
+		rem = num % 10;
+	        num /= 10;
+		str[i] = rem + '0';
+	}
+	return (str);
+}
+
+
+/**
  * my_exit - exit from the function
  *
  *
@@ -43,9 +76,42 @@ void my_exit(void)
 		exit(status);
 	}
 	else if (status < 0)
-		perror(argv[0]);
+		print_error("Illegal number");
 	child_pid = -1;
 }
+
+/**
+ * print_error - print error message
+ * @message: message if any
+ */
+void print_error(char *message)
+{
+	char *cmd;
+	char str[10];
+
+	cmd = num_str(commands_cnt, str);
+
+	write(out, argv[0], _strlen(argv[0]));
+	write(out, ": ", 2);
+	write(out, cmd, _strlen(cmd));
+	write(out, ": ", 2);
+	if (message == NULL)
+		perror(arc[0]);
+	else
+	{
+		write(out, arc[0], _strlen(arc[0]));
+		write(out, ": ", 2);
+		write(out, message, _strlen(message));
+		if (arc[1] != NULL)
+		{
+			write(out, ": ", 2);
+			write(out, arc[1], _strlen(arc[1]));
+		}
+	}
+	if (interactive)
+		write(out, "\n", 1);
+}
+
 
 /**
  * print_env - prints environmental variables

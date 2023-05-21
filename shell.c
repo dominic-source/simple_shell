@@ -8,8 +8,6 @@
  */
 int main(int ac, char *av[])
 {
-	int interactive;
-
 	/* Global variables */
 	in = STDIN_FILENO;
 	out = STDOUT_FILENO;
@@ -39,10 +37,10 @@ int main(int ac, char *av[])
  */
 void interact(int mode)
 {
-	char *hdl;
+	char *hdl = NULL;
 	size_t len = 0;
 	ssize_t line;
-	int status, ex, chk;
+	int status, ex, chk = -1;
 
 	line = _getline(&lptr, &len, in);
 	if (line == -1)
@@ -56,18 +54,19 @@ void interact(int mode)
 	child_pid = 1;
 	arc = alloc_mem();
 	hdl = handle_cmd();
-	chk = access(arc[0], F_OK | X_OK);
-	if ((arc == NULL || hdl == NULL || chk != 0) && child_pid != -1)
-			perror(argv[0]);
+	if (hdl != NULL)
+		chk = access(hdl, F_OK | X_OK);
+	if ((arc == NULL || chk != 0) && child_pid != -1)
+		print_error("not found");
 	else if (chk == 0 && child_pid != -1)
 		child_pid = fork();
 
 	if (child_pid == 0)
 	{
-		ex = execve(arc[0], arc, _environ);
+		ex = execve(hdl, arc, _environ);
 		if (ex == -1)
 			perror(argv[0]);
-		free_mem(arc, lptr, NULL);
+		free_mem(arc, lptr, hdl);
 		exit(0);
 	}
 	else
@@ -75,7 +74,7 @@ void interact(int mode)
 		wait(&status);
 		if (mode)
 			free_mem(arc, NULL, NULL);
-		free_mem(NULL, lptr, NULL);
+		free_mem(NULL, lptr, hdl);
 	}
 }
 
@@ -85,8 +84,8 @@ void interact(int mode)
  */
 char *handle_cmd(void)
 {
-	char *bin = "/bin/";
-	char temp[50];
+	char *temp = "/bin/";
+	char *bin;
 	int length;
 
 	if (arc[0] == NULL || _strlen(arc[0]) <= 0)
@@ -98,21 +97,32 @@ char *handle_cmd(void)
 		my_exit();
 	else if (_strcmp(arc[0], "env") == 0)
 		print_env();
-	else if (_strncmp(bin, arc[0], 5) != 0)
+	else if (_strncmp(temp, arc[0], 5) != 0)
 	{
-		_strcpy(temp, arc[0]);
 		length = _strlen(arc[0]) + 6;
-		free(arc[0]);
-		arc[0] = malloc(sizeof(char) * length);
-		if (arc[0] == NULL)
+		bin = malloc(sizeof(char) * length);
+		if (bin == NULL)
 		{
 			free_mem(arc, lptr, NULL);
 			return (NULL);
 		}
-		_strcpy(arc[0], bin);
-		_strcat(arc[0], temp);
+		_strcpy(bin, temp);
+		_strcat(bin, arc[0]);
+		return (bin);
 	}
-	return (arc[0]);
+	else if (_strncmp(temp, arc[0], 5) == 0)
+	{
+		length = _strlen(arc[0]) + 1;
+		bin = malloc(sizeof(char) * length);
+		if (bin == NULL)
+		{
+			free_mem(arc, lptr, NULL);
+			return (NULL);
+		}
+		_strcpy(bin, arc[0]);
+		return (bin);
+	}
+	return (NULL);
 }
 
 /**
