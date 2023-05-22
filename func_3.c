@@ -150,3 +150,30 @@ char **_realloc_env(int i)
 
 	return (_environ);
 }
+
+/**
+ * _getenv - returns the value of name in the environmental variable
+ * @name: name of variable to search in the environmental variable list
+ *
+ * Return: returns a pointer value or NULL if there is no match
+ */
+
+char *_getenv(const char *name)
+{
+	int i, j, n;
+	char *ptr, *eptr;
+	
+	if (name == NULL)
+		return (NULL);
+	for (i = 0; _environ[i] != NULL; i++)
+	{
+		j = _strncmp(name, _environ[i], _strlen(name));
+		if (j == 0)
+			break;
+	}
+	if (j != 0)
+		return (NULL);
+	n = _strlen(name) + 1;
+	
+	return (&_environ[i][n]);
+}
