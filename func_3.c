@@ -150,35 +150,3 @@ char **_realloc_env(int i)
 
 	return (_environ);
 }
-/*
-int main()
-{
-	int i = 0;
-	char *str;
-
-	_env();
-	_setenv("PATH", "Lekki_Epe", 1);
-	_setenv("LS_COLORS", "Blue", 0);
-	_setenv("STATE", "Abia", 1);
-	while (_environ[i] != NULL)
-	{
-		str = _environ[i];
-		printf("%s\n", str);
-		i++;
-	}
-	_unsetenv("STATE");
-	_unsetenv("LS_COLORS");
-	_unsetenv("SHLVL");
-	_unsetenv("PATH");
-	_unsetenv("HOSTNAME");
-	i = 0;
-	while (_environ[i] != NULL)
-	{
-		str = _environ[i];
-		printf("%s\n", str);
-		i++;
-	}
-
-	return (0);
-}
-*/
