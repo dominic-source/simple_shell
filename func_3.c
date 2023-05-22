@@ -48,6 +48,8 @@ int _setenv(const char *name, const char *value, int overwrite)
 	int i, j, index = -1;
 	char *nm, **new_environ;
 
+	if (name == NULL || value == NULL)
+		return (-1);
 	for (i = 0; _environ[i] != NULL; i++)
 	{
 		j = _strncmp(name, _environ[i], _strlen(name));
@@ -95,6 +97,8 @@ int _unsetenv(const char *name)
 {
 	int i, j, index = -1;
 
+	if (name == NULL)
+		return (-1);
 	for (i = 0; _environ[i] != NULL; i++)
 	{
 		j = _strncmp(name, _environ[i], _strlen(name));
@@ -146,7 +150,7 @@ char **_realloc_env(int i)
 
 	return (_environ);
 }
-
+/*
 int main()
 {
 	int i = 0;
@@ -176,3 +180,4 @@ int main()
 
 	return (0);
 }
+*/

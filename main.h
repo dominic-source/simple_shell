@@ -32,6 +32,7 @@ char *_strcpy(char *dest, const char *src);
 ssize_t _getline(char **lptr, size_t *n, int fd);
 int _setenv(const char *name, const char *value, int overwrite);
 void free_mem(char **args, char *a, char *b);
+int handle_func_cmd(void);
 char **alloc_mem(void);
 void hndl_sgnl(int sig);
 char *handle_cmd(void);
@@ -46,6 +47,6 @@ char **_realloc_env(int i);
 int _unsetenv(const char *name);
 char *num_str(int num, char str[]);
 void print_error(char *message);
-int interactive;
+int interactive;
 
 #endif
