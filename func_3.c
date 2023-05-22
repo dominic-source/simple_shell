@@ -102,7 +102,7 @@ int _unsetenv(const char *name)
 	for (i = 0; _environ[i] != NULL; i++)
 	{
 		j = _strncmp(name, _environ[i], _strlen(name));
-		if (j != 0 &&( _environ[i + 1] == NULL) && (index == -1))
+		if (j != 0 && (_environ[i + 1] == NULL) && (index == -1))
 			return (0);
 		else if (j == 0)
 		{
@@ -161,8 +161,7 @@ char **_realloc_env(int i)
 char *_getenv(const char *name)
 {
 	int i, j, n;
-	char *ptr, *eptr;
-	
+
 	if (name == NULL)
 		return (NULL);
 	for (i = 0; _environ[i] != NULL; i++)
@@ -174,6 +173,6 @@ char *_getenv(const char *name)
 	if (j != 0)
 		return (NULL);
 	n = _strlen(name) + 1;
-	
+
 	return (&_environ[i][n]);
 }
