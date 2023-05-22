@@ -47,6 +47,8 @@ char *num_str(int num, char *str)
 		count++;
 		m /= 10;
 	}
+	if (count == -1)
+		count++;
 	str[count + 1] = '\0';
 	for (i = count; i >= start; i--)
 	{
@@ -65,8 +67,6 @@ char *num_str(int num, char *str)
  */
 void my_exit(void)
 {
-	int status = 0;
-
 	if (arc[1] != NULL)
 		status = str_num(arc[1]);
 	if (status >= 0)

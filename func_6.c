@@ -11,7 +11,7 @@ int handle_func_cmd(void)
 
 	if (arc[0] == NULL || *(arc[0]) == '\0')
 		return (0);
-	if (_strcmp(arc[0],"env") == 0)
+	if (_strcmp(arc[0], "env") == 0)
 	{
 		print_env();
 		child_pid = -1;
@@ -40,6 +40,11 @@ int handle_func_cmd(void)
 			print_error("cannot unsetenv");
 		return (-1);
 	}
+	else if (_strcmp(arc[0], "echo") == 0)
+	{
+		_echo_expand();
+		return (0);
+	}
 	else if (_strcmp(arc[0], "cd") == 0)
 	{
 		value = _cd();
@@ -48,5 +53,49 @@ int handle_func_cmd(void)
 			print_error("cannot change directory");
 		return (-1);
 	}
+
 	return (0);
+}
+
+/**
+ * _echo_expand - expands echo argument
+ *
+ *
+ */
+void _echo_expand(void)
+{
+	char *str;
+	char str_n[10];
+
+	if (arc[1] != NULL)
+	{
+		if (_strcmp(arc[1], "$?") == 0)
+		{
+			num_str(status, str_n);
+			printf("find: %i\n", status);
+			free(arc[1]);
+			arc[1] = malloc(sizeof(char) * (_strlen(str_n) + 1));
+			if (arc[1] == NULL)
+				return;
+			_strcpy(arc[1], str_n);
+		}
+		else if (_strcmp(arc[1], "$$") == 0)
+		{
+			num_str(getpid(), str_n);
+			free(arc[1]);
+			arc[1] = malloc(sizeof(char) * (_strlen(str_n) + 1));
+			if (arc[1] == NULL)
+				return;
+			_strcpy(arc[1], str_n);
+		}
+		else if (_strncmp(arc[1], "$", 1) == 0)
+		{
+			str = _getenv(&(arc[1][1]));
+			free(arc[1]);
+			arc[1] = malloc(sizeof(char) * (_strlen(str) + 1));
+			if (arc[1] == NULL)
+				return;
+			_strcpy(arc[1], str);
+		}
+	}
 }

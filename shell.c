@@ -14,6 +14,7 @@ int main(int ac, char *av[])
 	er = STDERR_FILENO;
 	interactive = isatty(in);
 	argv = av;
+	status = 0;
 	commands_cnt = 0;
 	_env();
 	signal(SIGINT, hndl_sgnl);
@@ -52,7 +53,7 @@ void interact(int mode)
 	char *hdl = NULL;
 	size_t len = 0;
 	ssize_t line;
-	int status, ex, chk = -1;
+	int ex, chk = -1;
 
 	line = _getline(&lptr, &len, in);
 	if (line == -1)
@@ -143,7 +144,7 @@ char *handle_cmd(void)
 char **alloc_mem(void)
 {
 	char *lptrcpy = NULL, *str, *delim = " ";
-	int count = 1, i;
+	int count = 1, i, j;
 
 	if (*lptr == '\0' || lptr == NULL)
 	{
@@ -154,11 +155,9 @@ char **alloc_mem(void)
 	if (lptrcpy == NULL)
 		return (NULL);
 	_strcpy(lptrcpy, lptr);
-/* count the number of arguments */
 	_strtok(lptrcpy, delim);
 	while (_strtok(NULL, delim) != NULL)
 		count++;
-	/* allocate memory for what was counted */
 	arc = malloc(sizeof(char *) * (count + 1));
 	if (arc == NULL)
 	{
@@ -177,13 +176,23 @@ char **alloc_mem(void)
 			free_mem(arc, lptrcpy, NULL);
 			return (NULL);
 		}
-		/* initialize the allocated memory */
 		_strcpy(arc[i], str);
-
 		str = _strtok(NULL, delim);
 	}
 	arc[i] = NULL;
 	free_mem(NULL, lptrcpy, NULL);
+	for (i = 0; arc[i] != NULL; i++)
+		if (_strcmp(arc[i], "#") == 0)
+		{
+			free(arc[i]);
+			arc[i] = NULL;
+			j = i + 1;
+			for (; arc[j] != NULL; j++)
+				free(arc[j]);
+			free(arc[j]);
+			break;
+		}
+
 	return (arc);
 }
 
