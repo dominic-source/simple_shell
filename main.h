@@ -39,6 +39,7 @@ char *handle_cmd(void);
 void interact(int mode);
 char **arc;
 int status = 0;
+void _echo_expand(void);
 int commands_cnt;
 void _env(void);
 int str_num(char *str);
