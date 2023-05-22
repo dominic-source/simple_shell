@@ -38,7 +38,7 @@ void hndl_sgnl(int sig);
 char *handle_cmd(void);
 void interact(int mode);
 char **arc;
-int status = 0;
+int status;
 void _echo_expand(void);
 int commands_cnt;
 void _env(void);
