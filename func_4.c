@@ -77,7 +77,6 @@ void my_exit(void)
 	}
 	else if (status < 0)
 		print_error("Illegal number");
-	child_pid = -1;
 }
 
 /**
@@ -88,30 +87,32 @@ void print_error(char *message)
 {
 	char *cmd;
 	char str[10];
-
-	cmd = num_str(commands_cnt, str);
-
-	write(out, argv[0], _strlen(argv[0]));
-	write(out, ": ", 2);
-	write(out, cmd, _strlen(cmd));
-	write(out, ": ", 2);
-	if (message == NULL)
-		perror(arc[0]);
-	else
+	if (arc != NULL)
 	{
-		write(out, arc[0], _strlen(arc[0]));
-		write(out, ": ", 2);
-		write(out, message, _strlen(message));
-		if (arc[1] != NULL)
-		{
-			write(out, ": ", 2);
-			write(out, arc[1], _strlen(arc[1]));
-		}
-	}
-	if (interactive)
-		write(out, "\n", 1);
-}
+		cmd = num_str(commands_cnt, str);
 
+		write(er, argv[0], _strlen(argv[0]));
+		write(er, ": ", 2);
+		write(er, cmd, _strlen(cmd));
+		write(er, ": ", 2);
+		if (message == NULL)
+			perror(arc[0]);
+		else
+		{
+			write(er, arc[0], _strlen(arc[0]));
+			write(er, ": ", 2);
+			write(er, message, _strlen(message));
+			if (arc[1] != NULL)
+			{
+				write(er, ": ", 2);
+				write(er, arc[1], _strlen(arc[1]));
+			}
+		}
+		if (interactive)
+			write(er, "\n", 1);
+
+	}
+}
 
 /**
  * print_env - prints environmental variables
@@ -126,5 +127,4 @@ void print_env(void)
 		write(out, _environ[i], _strlen(_environ[i]));
 		write(out, "\n", 1);
 	}
-	child_pid = -1;
 }

@@ -20,6 +20,16 @@ int main(int ac, char *av[])
 
 	if (ac >= 3 || av == NULL)
 		return (-1);
+	if (av[1] != NULL)
+	{
+		in = open(av[1], O_RDONLY);
+		if (in == -1)
+		{
+			perror(av[1]);
+			close(in);
+		}
+		interactive = 0;
+	}
 	while (interactive)
 	{
 		write(out, "($) ", 4);
@@ -28,6 +38,8 @@ int main(int ac, char *av[])
 	while (!interactive)
 		interact(interactive);
 	free_mem(_environ, NULL, NULL);
+	if (av[1] != NULL)
+		close(in);
 	return (0);
 }
 
@@ -84,20 +96,18 @@ void interact(int mode)
  */
 char *handle_cmd(void)
 {
-	char *temp = "/bin/";
-	char *bin;
-	int length;
+	char *temp = "/bin/", *bin;
+	int length, handle;
 
-	if (arc[0] == NULL || _strlen(arc[0]) <= 0)
+	if (arc == NULL)
+		return (NULL);
+	handle = handle_func_cmd();
+	if ((arc[0] == NULL || _strlen(arc[0]) <= 0) && handle == 0)
 	{
 		free_mem(arc, NULL, NULL);
 		return (NULL);
 	}
-	else if (_strcmp(arc[0], "exit") == 0)
-		my_exit();
-	else if (_strcmp(arc[0], "env") == 0)
-		print_env();
-	else if (_strncmp(temp, arc[0], 5) != 0)
+	else if (_strncmp(temp, arc[0], 5) != 0 && handle == 0)
 	{
 		length = _strlen(arc[0]) + 6;
 		bin = malloc(sizeof(char) * length);
@@ -110,7 +120,7 @@ char *handle_cmd(void)
 		_strcat(bin, arc[0]);
 		return (bin);
 	}
-	else if (_strncmp(temp, arc[0], 5) == 0)
+	else if (_strncmp(temp, arc[0], 5) == 0 && handle == 0)
 	{
 		length = _strlen(arc[0]) + 1;
 		bin = malloc(sizeof(char) * length);
@@ -132,11 +142,14 @@ char *handle_cmd(void)
  */
 char **alloc_mem(void)
 {
-	char *lptrcpy = NULL;
-	char *str;
-	char *delim = " ";
+	char *lptrcpy = NULL, *str, *delim = " ";
 	int count = 1, i;
 
+	if (*lptr == '\0' || lptr == NULL)
+	{
+		arc = NULL;
+		return (NULL);
+	}
 	lptrcpy = malloc(sizeof(char) * (_strlen(lptr) + 1));
 	if (lptrcpy == NULL)
 		return (NULL);
