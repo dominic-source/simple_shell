@@ -46,6 +46,6 @@ char **_realloc_env(int i);
 int _unsetenv(const char *name);
 char *num_str(int num, char str[]);
 void print_error(char *message);
-int interactive;
+int interactive;
 
 #endif
