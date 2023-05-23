@@ -53,7 +53,7 @@ char *num_str(int num, char *str)
 	for (i = count; i >= start; i--)
 	{
 		rem = num % 10;
-	        num /= 10;
+		num /= 10;
 		str[i] = rem + '0';
 	}
 	return (str);
@@ -87,6 +87,7 @@ void print_error(char *message)
 {
 	char *cmd;
 	char str[10];
+
 	if (arc != NULL)
 	{
 		cmd = num_str(commands_cnt, str);
@@ -122,7 +123,7 @@ void print_env(void)
 {
 	int i;
 
-	for (i = 0;_environ[i] != NULL; i++)
+	for (i = 0; _environ[i] != NULL; i++)
 	{
 		write(out, _environ[i], _strlen(_environ[i]));
 		write(out, "\n", 1);

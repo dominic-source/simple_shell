@@ -1,5 +1,24 @@
 #include "main.h"
 
+#define HASH_ME\
+	do {\
+		for (i = 0; arc[i] != NULL; i++)\
+		{\
+			if (_strcmp(arc[i], "#") == 0)\
+			{\
+				free(arc[i]);\
+				arc[i] = NULL;\
+				j = i + 1;\
+				for (; arc[j] != NULL; j++)\
+				{\
+					free(arc[j]);\
+				} \
+				free(arc[j]);\
+				break;\
+			} \
+		} \
+	} \
+	while (0)
 /**
  * main - start a simple shell
  * @ac: count of argument
@@ -181,18 +200,7 @@ char **alloc_mem(void)
 	}
 	arc[i] = NULL;
 	free_mem(NULL, lptrcpy, NULL);
-	for (i = 0; arc[i] != NULL; i++)
-		if (_strcmp(arc[i], "#") == 0)
-		{
-			free(arc[i]);
-			arc[i] = NULL;
-			j = i + 1;
-			for (; arc[j] != NULL; j++)
-				free(arc[j]);
-			free(arc[j]);
-			break;
-		}
-
+	HASH_ME;
 	return (arc);
 }
 
