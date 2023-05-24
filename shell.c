@@ -74,16 +74,17 @@ void interact(void)
 {
 	char *hdl = NULL;
 	size_t len = 0;
-	ssize_t line;
+	ssize_t line = 0;
 	int ex, chk = -1;
 
-	line = _getline(&lptr, &len, in);
+	if (line != -1)
+		line = _getline(&lptr, &len, in);
 	if (line == -1)
 	{
-		write(out, "\n", 1);
+		if (interactive)
+			write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
 		free_mem(alias, NULL, NULL);
-		alias = NULL;
 		exit(0);
 	}
 	arc = NULL;
@@ -109,8 +110,7 @@ void interact(void)
 	else
 	{
 		wait(&status);
-		free_mem(arc, NULL, NULL);
-		free_mem(NULL, lptr, hdl);
+		free_mem(arc, lptr, hdl);
 	}
 }
 
