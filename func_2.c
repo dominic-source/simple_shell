@@ -131,3 +131,16 @@ void free_mem(char **args, char *a, char *b)
 		free(args);
 	}
 }
+/**
+ * error_alias - write error message for alias
+ * @message: error message
+ * @arg: alias argument
+ */
+void error_alias(char *message, char *arg)
+{
+	write(er, "alias: ", 7);
+	write(er, arg, _strlen(arg));
+	write(er, " ", 1);
+	write(er, message, _strlen(message));
+	write(er, "\n", 1);
+}

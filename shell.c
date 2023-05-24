@@ -34,6 +34,7 @@ int main(int ac, char *av[])
 	interactive = isatty(in);
 	argv = av;
 	status = 0;
+	alias = NULL;
 	commands_cnt = 0;
 	_env();
 	signal(SIGINT, hndl_sgnl);
@@ -58,6 +59,8 @@ int main(int ac, char *av[])
 	while (!interactive)
 		interact(interactive);
 	free_mem(_environ, NULL, NULL);
+	free_mem(alias, NULL, NULL);
+	alias = NULL;
 	if (av[1] != NULL)
 		close(in);
 	return (0);
@@ -79,6 +82,8 @@ void interact(int mode)
 	{
 		write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
+		free_mem(alias, NULL, NULL);
+		alias = NULL;
 		exit(0);
 	}
 	commands_cnt++;
@@ -92,7 +97,6 @@ void interact(int mode)
 		print_error("not found");
 	else if (chk == 0 && child_pid != -1)
 		child_pid = fork();
-
 	if (child_pid == 0)
 	{
 		ex = execve(hdl, arc, _environ);
@@ -214,6 +218,8 @@ void hndl_sgnl(int sig)
 	{
 		write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
+		free_mem(alias, NULL, NULL);
+		alias = NULL;
 		exit(EXIT_SUCCESS);
 	}
 }
