@@ -54,10 +54,10 @@ int main(int ac, char *av[])
 	while (interactive)
 	{
 		write(out, "($) ", 4);
-		interact(interactive);
+		interact();
 	}
 	while (!interactive)
-		interact(interactive);
+		interact();
 	free_mem(_environ, NULL, NULL);
 	free_mem(alias, NULL, NULL);
 	alias = NULL;
@@ -68,9 +68,9 @@ int main(int ac, char *av[])
 
 /**
  * interact - non interactive mode for the shell
- * @mode: interactive mode or not
+ *
  */
-void interact(int mode)
+void interact(void)
 {
 	char *hdl = NULL;
 	size_t len = 0;
@@ -86,6 +86,7 @@ void interact(int mode)
 		alias = NULL;
 		exit(0);
 	}
+	arc = NULL;
 	commands_cnt++;
 	rm_nwl(lptr);
 	child_pid = 1;
@@ -108,8 +109,7 @@ void interact(int mode)
 	else
 	{
 		wait(&status);
-		if (mode)
-			free_mem(arc, NULL, NULL);
+		free_mem(arc, NULL, NULL);
 		free_mem(NULL, lptr, hdl);
 	}
 }
