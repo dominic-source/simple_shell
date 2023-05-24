@@ -109,8 +109,7 @@ void print_error(char *message)
 				write(er, arc[1], _strlen(arc[1]));
 			}
 		}
-		if (interactive)
-			write(er, "\n", 1);
+		write(er, "\n", 1);
 
 	}
 }

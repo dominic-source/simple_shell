@@ -94,7 +94,7 @@ void interact(void)
 	arc = alloc_mem();
 	hdl = handle_cmd();
 	if (hdl != NULL)
-		chk = access(hdl, F_OK | X_OK);
+		chk = access(hdl, R_OK | F_OK | X_OK);
 	if ((arc == NULL || chk != 0) && child_pid != -1)
 		print_error("not found");
 	else if (chk == 0 && child_pid != -1)
@@ -103,7 +103,7 @@ void interact(void)
 	{
 		ex = execve(hdl, arc, _environ);
 		if (ex == -1)
-			perror(argv[0]);
+			print_error(NULL);
 		free_mem(arc, lptr, hdl);
 		exit(0);
 	}
