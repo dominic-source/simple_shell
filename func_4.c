@@ -108,8 +108,9 @@ void print_error(char *message)
 				write(er, ": ", 2);
 				write(er, arc[1], _strlen(arc[1]));
 			}
+			write(er, "\n", 1);
 		}
-		write(er, "\n", 1);
+
 
 	}
 }

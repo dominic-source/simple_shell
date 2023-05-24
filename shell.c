@@ -2,6 +2,7 @@
 
 #define HASH_ME\
 	do {\
+		free_mem(NULL, lptrcpy, NULL);\
 		for (i = 0; arc[i] != NULL; i++)\
 		{\
 			if (_strcmp(arc[i], "#") == 0)\
@@ -33,7 +34,7 @@ int main(int ac, char *av[])
 	er = STDERR_FILENO;
 	interactive = isatty(in);
 	argv = av;
-	status = 0;
+	status = EXIT_SUCCESS;
 	alias = NULL;
 	commands_cnt = 0;
 	_env();
@@ -178,7 +179,8 @@ char **alloc_mem(void)
 	if (lptrcpy == NULL)
 		return (NULL);
 	_strcpy(lptrcpy, lptr);
-	_strtok(lptrcpy, delim);
+	if (_strtok(lptrcpy, delim) == NULL)
+		return (NULL);
 	while (_strtok(NULL, delim) != NULL)
 		count++;
 	arc = malloc(sizeof(char *) * (count + 1));
@@ -203,7 +205,6 @@ char **alloc_mem(void)
 		str = _strtok(NULL, delim);
 	}
 	arc[i] = NULL;
-	free_mem(NULL, lptrcpy, NULL);
 	HASH_ME;
 	return (arc);
 }
