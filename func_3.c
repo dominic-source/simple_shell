@@ -109,13 +109,14 @@ int _unsetenv(const char *name)
 			index = i;
 		}
 	}
+	free(_environ[index]);
 	while (index < (i - 1))
 	{
 		_environ[index] = _environ[index + 1];
 		index++;
 	}
 	_environ[index] = NULL;
-	free(_environ[index + 1]);
+
 
 	return (0);
 }
@@ -142,6 +143,7 @@ char **_realloc_env(int i)
 	}
 	new_environ[n] = NULL;
 	free(_environ);
+	_environ = NULL;
 	_environ = new_environ;
 	for (n = 0; new_environ[n] != NULL; n++)
 	{

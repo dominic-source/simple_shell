@@ -158,13 +158,17 @@ int set_alias(void)
 			if (temp == NULL)
 				return (0);
 			for (j = 0; alias[j] != NULL; j++)
+			{
 				temp[j] = alias[j];
+			}
+
 			temp[j] = malloc(sizeof(char) * (_strlen(arc[i]) + 1));
 			if (temp[j] == NULL)
 				return (0);
 			_strcpy(temp[j], arc[i]);
 			temp[j + 1] = NULL;
 			alias = temp;
+			free(temp[j]);
 		}
 	}
 	return (1);
@@ -184,7 +188,7 @@ void _echo_expand(void)
 	{
 		if (_strcmp(arc[1], "$?") == 0)
 		{
-			num_str(status, str_n);
+			num_str(exit_status, str_n);
 			free(arc[1]);
 			arc[1] = malloc(sizeof(char) * (_strlen(str_n) + 1));
 			if (arc[1] == NULL)

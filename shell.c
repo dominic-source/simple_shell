@@ -1,5 +1,14 @@
 #include "main.h"
 
+#define WAIT_FREE\
+	do {\
+		wait(&stl);\
+		((child_pid == -1 || child_pid == 1) ?\
+		 (exit_status = status) : (exit_status = WEXITSTATUS(stl)));\
+		free_mem(arc, lptr, hdl);\
+	} \
+	while (0)
+
 #define HASH_ME\
 	do {\
 		free_mem(NULL, lptrcpy, NULL);\
@@ -35,6 +44,8 @@ int main(int ac, char *av[])
 	interactive = isatty(in);
 	argv = av;
 	alias = NULL;
+	exit_status = 0;
+	status = 0;
 	commands_cnt = 0;
 	_env();
 	signal(SIGINT, hndl_sgnl);
@@ -75,7 +86,7 @@ void interact(void)
 	char *hdl = NULL;
 	size_t len = 0;
 	ssize_t line = 0;
-	int ex, chk = -1;
+	int ex, chk = -1, stl;
 
 	if (line != -1)
 		line = _getline(&lptr, &len, in);
@@ -85,7 +96,7 @@ void interact(void)
 			write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
 		free_mem(alias, NULL, NULL);
-		exit(EXIT_SUCCESS);
+		exit(exit_status);
 	}
 	arc = NULL;
 	commands_cnt++;
@@ -105,15 +116,11 @@ void interact(void)
 		if (ex == -1)
 			print_error(NULL);
 		free_mem(arc, lptr, hdl);
-		exit(126);
+		exit(EXIT_FAILURE);
 	}
 	else
-	{
-		wait(&status);
-		free_mem(arc, lptr, hdl);
-	}
+		WAIT_FREE;
 }
-
 /**
  * handle_cmd - concatenate /bin/ to commands if it is absent
  * Return: pointer to str
@@ -166,7 +173,7 @@ char *handle_cmd(void)
  */
 char **alloc_mem(void)
 {
-	char *lptrcpy = NULL, *str, *delim = " ";
+	char *lptrcpy = NULL, *str = NULL, *delim = " ";
 	int count = 1, i, j;
 
 	arc = NULL;

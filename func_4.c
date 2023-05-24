@@ -67,27 +67,27 @@ char *num_str(int num, char *str)
  */
 void my_exit(void)
 {
-	status = 126;
+	int st_a = 0;
+
 	if (arc[1] != NULL)
 	{
-		status = str_num(arc[1]);
-		if (status >= 0)
+		st_a = str_num(arc[1]);
+		if (st_a >= 0)
 		{
 			free_mem(arc, lptr, NULL);
 			free_mem(_environ, NULL, NULL);
-			exit(status);
+			free_mem(alias, NULL, NULL);
+			exit(st_a);
 		}
-		else if (status < 0)
-		{
+		else if (st_a < 0)
 			print_error("Illegal number");
-			status = 2;
-		}
 	}
 	else
 	{
 		free_mem(arc, lptr, NULL);
 		free_mem(_environ, NULL, NULL);
-		exit(status);
+		free_mem(alias, NULL, NULL);
+		exit(exit_status);
 	}
 }
 
@@ -120,10 +120,8 @@ void print_error(char *message)
 				write(er, arc[1], _strlen(arc[1]));
 			}
 			write(er, "\n", 1);
-			status = 127;
+			status = errno;
 		}
-
-
 	}
 }
 
