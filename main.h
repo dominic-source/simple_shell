@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <fcntl.h>
@@ -44,6 +45,7 @@ char *handle_cmd(void);
 void interact(void);
 char **arc;
 int status;
+int my_status;
 int _cd(void);
 void _echo_expand(void);
 int commands_cnt;

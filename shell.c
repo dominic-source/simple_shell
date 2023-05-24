@@ -34,7 +34,6 @@ int main(int ac, char *av[])
 	er = STDERR_FILENO;
 	interactive = isatty(in);
 	argv = av;
-	status = EXIT_SUCCESS;
 	alias = NULL;
 	commands_cnt = 0;
 	_env();
@@ -86,7 +85,7 @@ void interact(void)
 			write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
 		free_mem(alias, NULL, NULL);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 	arc = NULL;
 	commands_cnt++;
@@ -106,7 +105,7 @@ void interact(void)
 		if (ex == -1)
 			print_error(NULL);
 		free_mem(arc, lptr, hdl);
-		exit(0);
+		exit(126);
 	}
 	else
 	{
@@ -170,11 +169,9 @@ char **alloc_mem(void)
 	char *lptrcpy = NULL, *str, *delim = " ";
 	int count = 1, i, j;
 
+	arc = NULL;
 	if (*lptr == '\0' || lptr == NULL)
-	{
-		arc = NULL;
 		return (NULL);
-	}
 	lptrcpy = malloc(sizeof(char) * (_strlen(lptr) + 1));
 	if (lptrcpy == NULL)
 		return (NULL);
@@ -221,6 +218,6 @@ void hndl_sgnl(int sig)
 		free_mem(_environ, NULL, NULL);
 		free_mem(alias, NULL, NULL);
 		alias = NULL;
-		exit(EXIT_SUCCESS);
+		exit(sig);
 	}
 }

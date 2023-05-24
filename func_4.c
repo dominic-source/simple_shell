@@ -20,7 +20,7 @@ int str_num(char *str)
 		if (str[i] >= '0' && str[i] <= '9')
 			num = (num * 10) + (str[i] - '0');
 		else
-			return (0);
+			return (-1);
 	}
 	return (num * sign);
 }
@@ -67,16 +67,28 @@ char *num_str(int num, char *str)
  */
 void my_exit(void)
 {
+	status = 126;
 	if (arc[1] != NULL)
+	{
 		status = str_num(arc[1]);
-	if (status >= 0)
+		if (status >= 0)
+		{
+			free_mem(arc, lptr, NULL);
+			free_mem(_environ, NULL, NULL);
+			exit(status);
+		}
+		else if (status < 0)
+		{
+			print_error("Illegal number");
+			status = 2;
+		}
+	}
+	else
 	{
 		free_mem(arc, lptr, NULL);
 		free_mem(_environ, NULL, NULL);
 		exit(status);
 	}
-	else if (status < 0)
-		print_error("Illegal number");
 }
 
 /**
@@ -91,7 +103,6 @@ void print_error(char *message)
 	if (arc != NULL)
 	{
 		cmd = num_str(commands_cnt, str);
-
 		write(er, argv[0], _strlen(argv[0]));
 		write(er, ": ", 2);
 		write(er, cmd, _strlen(cmd));
@@ -109,6 +120,7 @@ void print_error(char *message)
 				write(er, arc[1], _strlen(arc[1]));
 			}
 			write(er, "\n", 1);
+			status = 127;
 		}
 
 
