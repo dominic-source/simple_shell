@@ -39,7 +39,7 @@ int main(int ac, char *av[])
 	_env();
 	signal(SIGINT, hndl_sgnl);
 
-	if (av == NULL)
+	if (ac < 5 || av == NULL)
 		return (-1);
 	if (av[1] != NULL)
 	{
