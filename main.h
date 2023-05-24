@@ -41,7 +41,7 @@ int handle_func_cmd(void);
 char **alloc_mem(void);
 void hndl_sgnl(int sig);
 char *handle_cmd(void);
-void interact(int mode);
+void interact(void);
 char **arc;
 int status;
 int _cd(void);
