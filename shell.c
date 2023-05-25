@@ -16,21 +16,32 @@
 		free_mem(NULL, lptrcpy, NULL);\
 		for (i = 0; arc[i] != NULL; i++)\
 		{\
-			if (_strcmp(arc[i], "#") == 0)\
+			if (_strncmp(arc[i], "#", 1) == 0)\
 			{\
-				free(arc[i]);\
+				free_mem(NULL, arc[i], NULL);\
 				arc[i] = NULL;\
 				j = i + 1;\
 				for (; arc[j] != NULL; j++)\
 				{\
-					free(arc[j]);\
+					free_mem(NULL, arc[j], NULL);\
 				} \
-				free(arc[j]);\
+				free_mem(NULL, arc[j], NULL);\
 				break;\
 			} \
 		} \
 	} \
 	while (0)
+#define FI_WRITE\
+	do {\
+		write(er, argv[0], _strlen(argv[0]));\
+		write(er, ": ", 2);\
+		write(er, cmd, _strlen(cmd));\
+		write(er, ": Can't open ", 13);\
+		write(er, argv[1], _strlen(argv[1]));\
+		write(er, "\n", 1);\
+	} \
+while (0)
+
 /**
  * main - start a simple shell
  * @ac: count of argument
@@ -39,6 +50,7 @@
  */
 int main(int ac, char *av[])
 {
+	char str[10], *cmd;
 	/* Global variables */
 	in = STDIN_FILENO;
 	out = STDOUT_FILENO;
@@ -58,7 +70,8 @@ int main(int ac, char *av[])
 		in = open(av[1], O_RDONLY);
 		if (in == -1)
 		{
-			perror(av[1]);
+			cmd = num_str(commands_cnt, str);
+			FI_WRITE;
 			close(in);
 		}
 		interactive = 0;
@@ -117,7 +130,7 @@ void interact(void)
 		if (ex == -1)
 			print_error(NULL);
 		free_mem(arc, lptr, hdl);
-		exit(EXIT_FAILURE);
+		exit(126);
 	}
 	else
 		WAIT_FREE;
@@ -139,7 +152,7 @@ char *handle_cmd(void)
 		free_mem(arc, NULL, NULL);
 		return (NULL);
 	}
-	else if ((M_CD) && handle == 0)
+	else if ((M_CD) && handle == 0 && access(arc[0], F_OK | X_OK) != 0)
 	{
 		length = _strlen(arc[0]) + 6;
 		bin = malloc(sizeof(char) * length);
@@ -152,7 +165,7 @@ char *handle_cmd(void)
 		_strcat(bin, arc[0]);
 		return (bin);
 	}
-	else if ((S_CD) && handle == 0)
+	else if (((S_CD) && handle == 0) || access(arc[0], F_OK | X_OK) == 0)
 	{
 		bin = malloc(sizeof(char) * (_strlen(arc[0]) + 1));
 		if (bin == NULL)
@@ -173,17 +186,17 @@ char *handle_cmd(void)
  */
 char **alloc_mem(void)
 {
-	char *lptrcpy = NULL, *str = NULL, *delim = " ";
+	char *lptrcpy = NULL, *str = NULL, *delim = " ", *tmp;
 	int count = 1, i, j;
 
-	arc = NULL;
 	if (*lptr == '\0' || lptr == NULL)
 		return (NULL);
 	lptrcpy = malloc(sizeof(char) * (_strlen(lptr) + 1));
 	if (lptrcpy == NULL)
 		return (NULL);
 	_strcpy(lptrcpy, lptr);
-	if (_strtok(lptrcpy, delim) == NULL)
+	tmp = _strtok(lptrcpy, delim);
+	if (tmp == NULL || _strncmp(tmp, "#", 1) == 0)
 	{
 		free(lptrcpy);
 		return (NULL);
@@ -227,6 +240,6 @@ void hndl_sgnl(int sig)
 		free_mem(_environ, NULL, NULL);
 		free_mem(alias, NULL, NULL);
 		alias = NULL;
-		exit(sig);
+		exit(exit_status);
 	}
 }

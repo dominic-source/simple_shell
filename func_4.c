@@ -80,7 +80,10 @@ void my_exit(void)
 			exit(st_a);
 		}
 		else if (st_a < 0)
+		{
 			print_error("Illegal number");
+			status = 2;
+		}
 	}
 	else
 	{
@@ -100,7 +103,7 @@ void print_error(char *message)
 	char *cmd;
 	char str[10];
 
-	if (arc != NULL)
+	if (arc != NULL && arc[0] != NULL)
 	{
 		cmd = num_str(commands_cnt, str);
 		write(er, argv[0], _strlen(argv[0]));
@@ -108,7 +111,10 @@ void print_error(char *message)
 		write(er, cmd, _strlen(cmd));
 		write(er, ": ", 2);
 		if (message == NULL)
+		{
 			perror(arc[0]);
+			status = 126;
+		}
 		else
 		{
 			write(er, arc[0], _strlen(arc[0]));
@@ -120,7 +126,7 @@ void print_error(char *message)
 				write(er, arc[1], _strlen(arc[1]));
 			}
 			write(er, "\n", 1);
-			status = errno;
+			status = 127;
 		}
 	}
 }

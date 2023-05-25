@@ -9,6 +9,7 @@ int handle_func_cmd(void)
 {
 	int value = -1;
 
+	_echo_expand();
 	if (arc[0] == NULL || *(arc[0]) == '\0')
 		return (0);
 	if (_strcmp(arc[0], "env") == 0)
@@ -38,11 +39,6 @@ int handle_func_cmd(void)
 			print_error("cannot unsetenv");
 		child_pid = -1;
 		return (-1);
-	}
-	else if (_strcmp(arc[0], "echo") == 0)
-	{
-		_echo_expand();
-		return (0);
 	}
 	else if (cd_d_alias() == -1)
 		return (-1);
@@ -183,35 +179,39 @@ void _echo_expand(void)
 {
 	char *str;
 	char str_n[10];
+	int i;
 
-	if (arc[1] != NULL)
+	for (i = 0; arc[i] != NULL; i++)
 	{
-		if (_strcmp(arc[1], "$?") == 0)
+		if (_strcmp(arc[i], "$?") == 0)
 		{
 			num_str(exit_status, str_n);
-			free(arc[1]);
+			free(arc[i]);
 			arc[1] = malloc(sizeof(char) * (_strlen(str_n) + 1));
-			if (arc[1] == NULL)
+			if (arc[i] == NULL)
 				return;
-			_strcpy(arc[1], str_n);
+			_strcpy(arc[i], str_n);
 		}
-		else if (_strcmp(arc[1], "$$") == 0)
+		else if (_strcmp(arc[i], "$$") == 0)
 		{
 			num_str(getpid(), str_n);
-			free(arc[1]);
-			arc[1] = malloc(sizeof(char) * (_strlen(str_n) + 1));
-			if (arc[1] == NULL)
+			free(arc[i]);
+			arc[i] = malloc(sizeof(char) * (_strlen(str_n) + 1));
+			if (arc[i] == NULL)
 				return;
-			_strcpy(arc[1], str_n);
+			_strcpy(arc[i], str_n);
 		}
-		else if (_strncmp(arc[1], "$", 1) == 0)
+		else if (_strncmp(arc[i], "$", 1) == 0)
 		{
-			str = _getenv(&(arc[1][1]));
-			free(arc[1]);
-			arc[1] = malloc(sizeof(char) * (_strlen(str) + 1));
-			if (arc[1] == NULL)
+			if (arc[i][1] == '\0')
+				str = "$";
+			else
+				str = _getenv(&(arc[i][1]));
+			free(arc[i]);
+			arc[i] = malloc(sizeof(char) * (_strlen(str) + 1));
+			if (arc[i] == NULL)
 				return;
-			_strcpy(arc[1], str);
+			_strcpy(arc[i], str);
 		}
 	}
 }
