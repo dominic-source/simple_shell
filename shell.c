@@ -1,5 +1,6 @@
 #include "main.h"
-
+#define S_CD (_strncmp(temp, arc[0], 5) == 0 || _strncmp(".", arc[0], 1) == 0)
+#define M_CD (_strncmp(temp, arc[0], 5) != 0 && _strncmp(".", arc[0], 1) != 0)
 #define WAIT_FREE\
 	do {\
 		wait(&stl);\
@@ -11,6 +12,7 @@
 
 #define HASH_ME\
 	do {\
+		arc[i] = NULL;\
 		free_mem(NULL, lptrcpy, NULL);\
 		for (i = 0; arc[i] != NULL; i++)\
 		{\
@@ -49,7 +51,6 @@ int main(int ac, char *av[])
 	commands_cnt = 0;
 	_env();
 	signal(SIGINT, hndl_sgnl);
-
 	if (ac > 5 || av == NULL)
 		return (-1);
 	if (av[1] != NULL)
@@ -138,7 +139,7 @@ char *handle_cmd(void)
 		free_mem(arc, NULL, NULL);
 		return (NULL);
 	}
-	else if (_strncmp(temp, arc[0], 5) != 0 && handle == 0)
+	else if ((M_CD) && handle == 0)
 	{
 		length = _strlen(arc[0]) + 6;
 		bin = malloc(sizeof(char) * length);
@@ -151,10 +152,9 @@ char *handle_cmd(void)
 		_strcat(bin, arc[0]);
 		return (bin);
 	}
-	else if (_strncmp(temp, arc[0], 5) == 0 && handle == 0)
+	else if ((S_CD) && handle == 0)
 	{
-		length = _strlen(arc[0]) + 1;
-		bin = malloc(sizeof(char) * length);
+		bin = malloc(sizeof(char) * (_strlen(arc[0]) + 1));
 		if (bin == NULL)
 		{
 			free_mem(arc, lptr, NULL);
@@ -184,7 +184,10 @@ char **alloc_mem(void)
 		return (NULL);
 	_strcpy(lptrcpy, lptr);
 	if (_strtok(lptrcpy, delim) == NULL)
+	{
+		free(lptrcpy);
 		return (NULL);
+	}
 	while (_strtok(NULL, delim) != NULL)
 		count++;
 	arc = malloc(sizeof(char *) * (count + 1));
@@ -208,7 +211,6 @@ char **alloc_mem(void)
 		_strcpy(arc[i], str);
 		str = _strtok(NULL, delim);
 	}
-	arc[i] = NULL;
 	HASH_ME;
 	return (arc);
 }
