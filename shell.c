@@ -72,6 +72,7 @@ int main(int ac, char *av[])
 		{
 			cmd = num_str(commands_cnt, str);
 			FI_WRITE;
+			exit_status = 127;
 			close(in);
 		}
 		interactive = 0;

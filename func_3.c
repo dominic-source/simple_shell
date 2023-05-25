@@ -103,7 +103,10 @@ int _unsetenv(const char *name)
 	{
 		j = _strncmp(name, _environ[i], _strlen(name));
 		if (j != 0 && (_environ[i + 1] == NULL) && (index == -1))
+		{
+			status = 0;
 			return (0);
+		}
 		else if (j == 0)
 		{
 			index = i;
@@ -116,8 +119,7 @@ int _unsetenv(const char *name)
 		index++;
 	}
 	_environ[index] = NULL;
-
-
+	status = 0;
 	return (0);
 }
 

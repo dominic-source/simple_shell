@@ -144,4 +144,5 @@ void print_env(void)
 		write(out, _environ[i], _strlen(_environ[i]));
 		write(out, "\n", 1);
 	}
+	status = 0;
 }

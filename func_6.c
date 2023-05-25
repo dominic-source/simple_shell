@@ -30,13 +30,15 @@ int handle_func_cmd(void)
 			value = _setenv(arc[1], arc[2], 1);
 		child_pid = -1;
 		if (value == -1)
-			print_error("cannot setenv");
+			print_error("not found");
+		else
+			status = 0;
 		return (-1);
 	}
 	else if (_strcmp(arc[0], "unsetenv") == 0)
 	{
 		if (_unsetenv(arc[1]) == -1)
-			print_error("cannot unsetenv");
+			print_error("not found");
 		child_pid = -1;
 		return (-1);
 	}
