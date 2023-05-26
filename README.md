@@ -44,3 +44,15 @@ After receiving a command, hsh tokenizes it into words using " " as a delimiter.
 If the first character of the command is neither a slash (\) nor dot (.), the shell searches for it in the list of shell builtins. If there exists a builtin by that name, the builtin is invoked.
 If the first character of the command is none of a slash (\), dot (.), nor builtin, hsh searches each element of the PATH environmental variable for a directory containing an executable file by that name.
 If the first character of the command is a slash (\) or dot (.) or either of the above searches was successful, the shell executes the named program with any remaining given arguments in a separate execution environment.
+
+Exit Status
+hsh returns the exit status of the last command executed, with zero indicating success and non-zero indicating failure.
+
+If a command is not found, the return status is 127; if a command is found but is not executable, the return status is 126.
+
+All builtins return zero on success and one or two on incorrect usage (indicated by a corresponding error message).
+
+Signals
+While running in interactive mode, hsh ignores the keyboard input Ctrl+c. Alternatively, an input of end-of-file (Ctrl+d) will exit the program.
+
+User hits Ctrl+d in the third line.
