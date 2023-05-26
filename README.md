@@ -21,3 +21,10 @@ When the command is done, the program returns to the parent process and prints t
 The program is ready to receive a new command
 To exit: press Ctrl-D or enter "exit" (with or without a status)
 Works also in non interactive mode
+
+Invocation
+Usage: hsh [filename]
+
+To invoke hsh, compile all .c files in the repository and run the resulting executable.
+
+hsh can be invoked both interactively and non-interactively. If hsh is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
