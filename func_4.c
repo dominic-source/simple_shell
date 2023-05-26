@@ -75,7 +75,7 @@ void my_exit(void)
 		if (st_a >= 0)
 		{
 			free_mem(arc, lptr, NULL);
-			free_mem(_environ, NULL, NULL);
+			free_mem(_environ, previous_wd, NULL);
 			free_mem(alias, NULL, NULL);
 			exit(st_a);
 		}
@@ -88,7 +88,7 @@ void my_exit(void)
 	else
 	{
 		free_mem(arc, lptr, NULL);
-		free_mem(_environ, NULL, NULL);
+		free_mem(_environ, previous_wd, NULL);
 		free_mem(alias, NULL, NULL);
 		exit(exit_status);
 	}
@@ -122,7 +122,8 @@ void print_error(char *message)
 			write(er, message, _strlen(message));
 			if (arc[1] != NULL)
 			{
-				write(er, ": ", 2);
+				if (cdc)
+					write(er, ": ", 2);
 				write(er, arc[1], _strlen(arc[1]));
 			}
 			write(er, "\n", 1);

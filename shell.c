@@ -33,6 +33,7 @@
 	while (0)
 #define FI_WRITE\
 	do {\
+		cmd = num_str(commands_cnt, str);\
 		write(er, argv[0], _strlen(argv[0]));\
 		write(er, ": ", 2);\
 		write(er, cmd, _strlen(cmd));\
@@ -57,6 +58,7 @@ int main(int ac, char *av[])
 	er = STDERR_FILENO;
 	interactive = isatty(in);
 	argv = av;
+	previous_wd = NULL;
 	alias = NULL;
 	exit_status = 0;
 	status = 0;
@@ -70,7 +72,6 @@ int main(int ac, char *av[])
 		in = open(av[1], O_RDONLY);
 		if (in == -1)
 		{
-			cmd = num_str(commands_cnt, str);
 			FI_WRITE;
 			exit_status = 127;
 			close(in);
@@ -84,7 +85,7 @@ int main(int ac, char *av[])
 	}
 	while (!interactive)
 		interact();
-	free_mem(_environ, NULL, NULL);
+	free_mem(_environ, previous_wd, NULL);
 	free_mem(alias, NULL, NULL);
 	alias = NULL;
 	if (av[1] != NULL)
@@ -110,12 +111,13 @@ void interact(void)
 		if (interactive)
 			write(out, "\n", 1);
 		free_mem(_environ, NULL, NULL);
-		free_mem(alias, NULL, NULL);
+		free_mem(alias, previous_wd, NULL);
 		exit(exit_status);
 	}
 	arc = NULL;
 	commands_cnt++;
 	rm_nwl(lptr);
+	cdc = 1;
 	child_pid = 1;
 	arc = alloc_mem();
 	hdl = handle_cmd();
@@ -238,7 +240,7 @@ void hndl_sgnl(int sig)
 	if (sig == SIGINT)
 	{
 		write(out, "\n", 1);
-		free_mem(_environ, NULL, NULL);
+		free_mem(_environ, previous_wd, NULL);
 		free_mem(alias, NULL, NULL);
 		alias = NULL;
 		exit(exit_status);

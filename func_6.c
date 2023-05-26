@@ -60,7 +60,10 @@ int cd_d_alias(void)
 		child_pid = -1;
 		value = _cd();
 		if (value == -1)
-			print_error("cannot change directory");
+		{
+			cdc = 0;
+			print_error("can't cd to ");
+		}
 		return (-1);
 	}
 	else if (_strcmp(arc[0], "alias") == 0)
@@ -69,13 +72,11 @@ int cd_d_alias(void)
 		if (arc[1] != NULL)
 		{
 			for (i = 0; a[i] != '\0'; i++)
-			{
 				if (a[i] == '=')
 				{
 					print_alias = 0;
 					break;
 				}
-			}
 			if (print_alias == 0)
 				if (set_alias() == 0)
 					error_alias("Error", arc[1]);

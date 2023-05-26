@@ -14,11 +14,12 @@
 #include <dirent.h>
 #include <string.h>
 char *rm_nwl(char *str);
-
+char *previous_wd;
 char *lptr;
 int in;
 int out;
 int er;
+int cdc;
 char **argv;
 pid_t child_pid;
 char **_environ;
