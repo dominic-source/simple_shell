@@ -34,3 +34,6 @@ Upon invocation, hsh receives and copies the environment of the parent process i
 
 HOME
 The home directory of the current user and the default directory argument for the cd builtin command.
+
+PATH
+A colon-separated list of directories in which the shell looks for commands. A null directory name in the path (represented by any of two adjacent colons, an initial colon, or a trailing colon) indicates the current directory.
